@@ -1,0 +1,93 @@
+{
+  "name": "relative-url-interface",
+  "description": "Create URL interfaces without a base URL",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./mod.js",
+      "types": "./mod.d.ts"
+    }
+  },
+  "main": "mod.js",
+  "types": "mod.d.ts",
+  "files": [
+    "mod.d.ts",
+    "mod.js",
+    "mod.js.map"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "keywords": [
+    "absolute",
+    "api",
+    "base",
+    "deep",
+    "dot",
+    "dots",
+    "extend",
+    "extends",
+    "hyperlink",
+    "hyperlinks",
+    "interface",
+    "interfaces",
+    "javascript",
+    "js",
+    "link",
+    "links",
+    "nested",
+    "nesting",
+    "nests",
+    "parent",
+    "preserve",
+    "preserves",
+    "relative",
+    "slash",
+    "standard",
+    "standards",
+    "url",
+    "whatwg",
+    "web"
+  ],
+  "license": "CC0-1.0",
+  "repository": "astro-community/relative-url",
+  "author": "Jonathan Neal <jonathantneal@hotmail.com>",
+  "bugs": "https://github.com/astro-community/relative-url/issues",
+  "homepage": "https://github.com/astro-community/relative-url#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "21.0.1",
+    "@rollup/plugin-inject": "4.0.3",
+    "@rollup/plugin-node-resolve": "13.1.1",
+    "@rollup/plugin-typescript": "8.3.0",
+    "magic-string": "0.25.7",
+    "rollup": "2.61.1",
+    "spec-url": "2.0.0-dev.1"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "release": "npm publish --access public",
+    "test": "node test.js"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "useTabs": true,
+    "overrides": [
+      {
+        "files": [
+          ".stackblitzrc",
+          "*.json"
+        ],
+        "options": {
+          "useTabs": false
+        }
+      }
+    ]
+  },
+  "volta": {
+    "node": "16.13.1",
+    "npm": "8.3.0"
+  }
+}

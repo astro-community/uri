@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+mod.*
+yarn.lock
+*.log*
+.*
+!.gitattributes
+!.gitignore
