@@ -175,10 +175,10 @@ export class RelativeURL extends URL {
 		]
 	}
 
-	to(...hrefs: string[]) {
+	to(href: string[], ...hrefs: string[]) {
 		const TypeOfThis = this.constructor as typeof RelativeURL
 
-		hrefs = hrefs.reverse().concat(this.href)
+		hrefs = hrefs.reverse().concat(href, this.href)
 
 		return new TypeOfThis(hrefs.shift() as string, ...hrefs)
 	}

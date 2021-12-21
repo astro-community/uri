@@ -50,9 +50,13 @@
     "whatwg",
     "web"
   ],
-  "license": "CC0-1.0",
+  "license": "(CC0-1.0 AND MIT)",
   "repository": "astro-community/relative-url",
   "author": "Jonathan Neal <jonathantneal@hotmail.com>",
+  "contributors": [
+    "Jonathan Neal (https://github.com/jonathantneal)",
+    "Alwin Blok (https://github.com/alwinb)"
+  ],
   "bugs": "https://github.com/astro-community/relative-url/issues",
   "homepage": "https://github.com/astro-community/relative-url#readme",
   "devDependencies": {
