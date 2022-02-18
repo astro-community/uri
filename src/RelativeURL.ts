@@ -4,7 +4,7 @@ interface InternalURL {
 	scheme?: string
 	user?: string
 	pass?: string
-	host?: string
+	host?: string | number | number[] | string[]
 	port?: string
 	drive?: string
 	root?: string
@@ -18,20 +18,23 @@ const mapOfInternalURLs: WeakMap<URL, InternalURL> = new WeakMap
 
 const getInternalURL = (instance: URL) => mapOfInternalURLs.get(instance) || mapOfInternalURLs.set(instance, {}).get(instance) as InternalURL
 
-const toInternalURL = (...hrefs: (URL | string)[]): InternalURL => url.normalise(
-	hrefs.reduce(
-		(internalURL, nextHREF) => url.goto(
-			internalURL,
-			url.parse(
-				String(nextHREF)
-			)
-		),
+// @ts-ignore
+const toInternalURL = (...hrefs: (URL | string)[]): InternalURL => hrefs.reduce(
+	(internalURL, nextHREF) => url.rebase(
 		url.parse(
-			String(
-				hrefs.shift()
-			)
+			String(nextHREF)
+		),
+		internalURL
+	),
+	url.parse(
+		String(
+			hrefs.shift()
 		)
 	)
+)
+
+const toHost = (url: number | string | number[] | string[] | void) => (
+	url == null ? '' : typeof url == 'object' ? url.join('') : String(url)
 )
 
 export class RelativeURL extends URL {
@@ -41,7 +44,7 @@ export class RelativeURL extends URL {
 		const internalURL = toInternalURL(...[ href ].concat(hrefs).reverse())
 
 		super.hash = internalURL.hash || ''
-		super.hostname = internalURL.host || ''
+		super.hostname = toHost(internalURL.host)
 		super.search = internalURL.query || ''
 
 		mapOfInternalURLs.set(this, internalURL)
@@ -59,7 +62,7 @@ export class RelativeURL extends URL {
 		const internalURL = getInternalURL(this)
 
 		return String().concat(
-			internalURL.host ?? '',
+			toHost(internalURL.host),
 			internalURL.port != null ? ':' + internalURL.port : ''
 		)
 	}
@@ -71,8 +74,8 @@ export class RelativeURL extends URL {
 			internalURL.scheme ? internalURL.scheme + ':' : '',
 			internalURL.user ? '//' + internalURL.user : '',
 			internalURL.pass ? ':' + internalURL.pass : '',
-			internalURL.host ? internalURL.user ? '@' : '//' : '',
-			internalURL.host ?? '',
+			toHost(internalURL.host) ? internalURL.user ? '@' : '//' : '',
+			toHost(internalURL.host),
 			internalURL.port != null ? ':' + internalURL.port : '',
 			internalURL.drive ? '/' + internalURL.drive : '',
 			internalURL.root ?? '',
@@ -87,7 +90,7 @@ export class RelativeURL extends URL {
 		const internalURL = toInternalURL(href)
 
 		super.hash = internalURL.hash || ''
-		super.hostname = internalURL.host || ''
+		super.hostname = toHost(internalURL.host)
 		super.password = internalURL.pass || ''
 		super.search = internalURL.query || ''
 		super.username = internalURL.user || ''
@@ -96,7 +99,7 @@ export class RelativeURL extends URL {
 	}
 
 	get hostname(): string {
-		return getInternalURL(this).host ?? ''
+		return toHost(getInternalURL(this).host)
 	}
 
 	set hostname(hostname: string) {
