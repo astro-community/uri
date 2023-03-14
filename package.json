@@ -1,7 +1,7 @@
 {
   "name": "relative-url-interface",
-  "description": "Create URL interfaces without a base URL",
-  "version": "0.2.0",
+  "description": "Create URI interfaces",
+  "version": "0.3.0",
   "type": "module",
   "exports": {
     ".": {
@@ -17,7 +17,9 @@
     "mod.js.map"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">= 16.12",
+    "npm": ">= 8.19",
+    "pnpm": ">= 7.9"
   },
   "keywords": [
     "absolute",
@@ -51,27 +53,33 @@
     "web"
   ],
   "license": "(CC0-1.0 AND MIT)",
-  "repository": "astro-community/relative-url",
+  "repository": "astro-community/uri",
   "author": "Jonathan Neal <jonathantneal@hotmail.com>",
   "contributors": [
     "Jonathan Neal (https://github.com/jonathantneal)",
     "Alwin Blok (https://github.com/alwinb)"
   ],
-  "bugs": "https://github.com/astro-community/relative-url/issues",
-  "homepage": "https://github.com/astro-community/relative-url#readme",
+  "bugs": "https://github.com/astro-community/uri/issues",
+  "homepage": "https://github.com/astro-community/uri#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "21.0.1",
-    "@rollup/plugin-inject": "4.0.4",
-    "@rollup/plugin-node-resolve": "13.1.3",
-    "@rollup/plugin-typescript": "8.3.0",
-    "magic-string": "0.25.7",
-    "rollup": "2.67.2",
-    "spec-url": "^2.3.0-dev"
+    "@rollup/plugin-commonjs": "24.0.1",
+    "@rollup/plugin-inject": "5.0.3",
+    "@rollup/plugin-node-resolve": "15.0.1",
+    "@rollup/plugin-typescript": "11.0.0",
+    "magic-string": "0.30.0",
+    "rollup": "3.19.1",
+    "spec-url": "2.3.3-dev",
+    "tslib": "2.5.0",
+    "typescript": "4.9.5"
   },
   "scripts": {
     "build": "node build.js",
     "release": "npm publish --access public",
-    "test": "node test.js"
+    "test": "pnpm run '/^test:node(16|18)$/'",
+    "test:node16": "node test/_test.js",
+    "test:node18": "node test/_test.js",
+    "pretest:node16": "pnpm env use --global 16",
+    "pretest:node18": "pnpm env use --global 18"
   },
   "prettier": {
     "semi": false,
@@ -89,9 +97,5 @@
         }
       }
     ]
-  },
-  "volta": {
-    "node": "16.13.1",
-    "npm": "8.3.0"
   }
 }

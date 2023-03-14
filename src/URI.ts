@@ -19,7 +19,7 @@ const mapOfInternalURLs: WeakMap<URL, InternalURL> = new WeakMap
 const getInternalURL = (instance: URL) => mapOfInternalURLs.get(instance) || mapOfInternalURLs.set(instance, {}).get(instance) as InternalURL
 
 // @ts-ignore
-const toInternalURL = (...hrefs: (URL | string)[]): InternalURL => hrefs.reduce(
+const toInternalURL = (...hrefs: URISource[]): InternalURL => hrefs.reduce(
 	(internalURL, nextHREF) => url.rebase(
 		url.parse(
 			String(nextHREF)
@@ -37,8 +37,8 @@ const toHost = (url: number | string | number[] | string[] | void) => (
 	url == null ? '' : typeof url == 'object' ? url.join('') : String(url)
 )
 
-export class RelativeURL extends URL {
-	constructor(href: URL | string, ...hrefs: (URL | string)[]) {
+class URI extends URL {
+	constructor(href: URISource, ...hrefs: URISource[]) {
 		super('noop://')
 
 		const internalURL = toInternalURL(...[ href ].concat(hrefs).reverse())
@@ -86,7 +86,7 @@ export class RelativeURL extends URL {
 		)
 	}
 
-	set href(href: URL | string) {
+	set href(href: URISource) {
 		const internalURL = toInternalURL(href)
 
 		super.hash = internalURL.hash || ''
@@ -179,10 +179,21 @@ export class RelativeURL extends URL {
 	}
 
 	to(href: string[], ...hrefs: string[]) {
-		const TypeOfThis = this.constructor as typeof RelativeURL
+		const TypeOfThis = this.constructor as typeof URI
 
-		hrefs = hrefs.reverse().concat(href, this.href)
-
-		return new TypeOfThis(hrefs.shift() as string, ...hrefs)
+		return new TypeOfThis(...hrefs.reverse().concat(href, this.href) as [ URISource, ...URISource[] ])
 	}
+
+	static from(href: URISource, ...hrefs: URISource[]) {
+		const TypeOfThis = this
+
+		return new TypeOfThis(...hrefs.reverse().concat(href) as [ URISource, ...URISource[] ])
+	}
+}
+
+export type URISource = URL | string
+
+export {
+	URI as default,
+	URI as URI
 }

@@ -1,82 +1,243 @@
-# RelativeURL
+# URI
 
-**RelativeURL** creates [fully compatible](https://developer.mozilla.org/en-US/docs/Web/API/URL) `URL` interfaces, without requiring a base URL. <sup>[1](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL#parameters)</sup> <sup>[2](https://github.com/whatwg/url/issues/531)</sup> <sup>[3](https://alwinb.github.io/url-specification/#url-specification)</sup>
+**URI** is a [**URL** interface](https://developer.mozilla.org/en-US/docs/Web/API/URL) that does not require a base URL. <sup>[1](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL#parameters)</sup> <sup>[2](https://github.com/whatwg/url/issues/531)</sup> <sup>[3](https://alwinb.github.io/url-specification/#url-specification)</sup>
 
 ```shell
 npm install relative-url-interface
 ```
 
 ```js
-const kitten_image = new RelativeURL('../assets/kitten.jpg')
+import URI from 'relative-url-interface'
 
-String(kitten_image) // "../assets/kitten.jpg"
+const uri = new URI('../assets/kitten.jpg')
+
+String(uri) // "../assets/kitten.jpg"
 ```
 
-The `RelativeURL` interface extends `URL` and can be used as a drop-in replacement. It is powered by [`spec-url`](https://www.npmjs.com/package/spec-url) and is ideal for server-side code, pre-compiled code, or any situation where an absolute URL may not be known.
+The `URI` class extends `URL` and can be used as a drop-in replacement. It is powered by [`spec-url`](https://www.npmjs.com/package/spec-url), and it is ideal for server-side code, pre-compiled code, or any situation where absolute URLs may not be known.
 
 ```js
-const puppy_page = new RelativeURL('file://path/to/site/src/pages/puppy.astro')
+import URI from 'relative-url-interface'
 
-const absolute_kitten = new RelativeURL(kitten_image, puppy_page)
+const puppy_page = new URI('file://path/to/site/src/pages/puppy.astro')
+const kitty_image = URI.from('../assets/kitten.jpg')
 
-fs.readFile(absolute_kitten, 'utf8') // reads "file://path/to/site/src/assets/kitten.jpg"
+const absolute_kitten = new URI(kitty_image, puppy_page)
+
+fs.readFile(absolute_kitten, 'utf8') // contents of "file://path/to/site/src/assets/kitten.jpg"
 ```
 
 
 
-## Features
+## Properties
 
-#### hash
+#### segments
 
-The `hash` property is a string representing the <strong>fragment identifier</strong> of the URL. When present, it is preceeded by a number sign (<code>#</code>).
+The `segments` property is an array of strings representing the <strong>path segments</strong> of the URL.</dd>
 
-#### host
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
 
-The `host` property is a string representing the <strong>domain</strong> and <strong>port</strong> of the URL. When present, the <strong>port</strong> is preceeded by a colon (<code>:</code>).
+uri.segments // [ "path", "to", "asset.jpg" ]
+```
 
-#### hostname
+```js
+const uri = new URI('../to/asset.jpg')
 
-The `hostname` property is a string representing the <strong>domain</strong> of the URL.
+uri.segments // [ "..", "to", "asset.jpg" ]
+```
 
 #### href
 
 The `href` property is a string representing the whole <strong>URL</strong>, including any search parameters and fragment identifiers.
 
-#### origin
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
 
-The `origin` property is a string representing the <strong>scheme</strong>, <strong>domain</strong>, and <strong>port</strong> of the URL. When present, the <strong>port</strong> is preceeded by a colon (<code>:</code>).
+uri.href // "https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content"
+```
 
-#### password
+```js
+const uri = new URI('../to/asset.jpg')
 
-The `password` property is a string representing the <strong>password</strong> of the URL.
-
-#### pathname
-
-The `pathname` property is a string representing the <strong>path</strong> of the URL, which does not include the <strong>origin</strong>, <strong>search parameters</strong>, or <strong>fragment identifiers</strong>.
-
-#### port
-
-The `port` property is a string representing the <strong>port</strong> of the URL.
+uri.href // "../to/asset.jpg"
+```
 
 #### protocol
 
 The `protocol` property is a string representing the <strong>scheme</strong> of the URL, including the colon (<code>:</code>) that proceeds it.
 
-#### search
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
 
-The `search` property is a string representing the <strong>search parameters</strong> of the URL. When present, it is preceeded by a question mark (<code>?</code>).
+uri.protocol // "https:"
+```
 
-#### searchParams
+```js
+const uri = new URI('../to/asset.jpg')
 
-The `searchParams` property is a <code>URLSearchParams</code> object representing the parsed <strong>search parameters</strong> of the URL.
+uri.protocol // ""
+```
+
+#### origin
+
+The `origin` property is a string representing the <strong>scheme</strong>, <strong>domain</strong>, and <strong>port</strong> of the URL. When present, the <strong>port</strong> is preceeded by a colon (<code>:</code>).
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.origin // "https://localhost:8080"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.origin // ""
+```
+
+#### host
+
+The `host` property is a string representing the <strong>domain</strong> and <strong>port</strong> of the URL. When present, the <strong>port</strong> is preceeded by a colon (<code>:</code>).
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.host // "localhost:8080"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.host // ""
+```
+
+#### hostname
+
+The `hostname` property is a string representing the <strong>domain</strong> of the URL.
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.hostname // "localhost"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.hostname // ""
+```
 
 #### username
 
 The `username` property is a string representing the <strong>username</strong> of the URL.
 
-#### segments
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
 
-The `segments` property is an array of strings representing the <strong>path segments</strong> of the URL.</dd>
+uri.username // "un"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.username // ""
+```
+
+#### password
+
+The `password` property is a string representing the <strong>password</strong> of the URL.
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.password // "pw"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.password // ""
+```
+
+#### port
+
+The `port` property is a string representing the <strong>port</strong> of the URL.
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.port // "8080"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.port // ""
+```
+
+#### pathname
+
+The `pathname` property is a string representing the <strong>path</strong> of the URL, which does not include the <strong>origin</strong>, <strong>search parameters</strong>, or <strong>fragment identifiers</strong>.
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.pathname // "/path/to/asset.jpg"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.pathname // "../to/asset.jpg"
+```
+
+#### search
+
+The `search` property is a string representing the <strong>search parameters</strong> of the URL. When present, it is preceeded by a question mark (<code>?</code>).
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.search // "?q=a"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.search // ""
+```
+
+#### searchParams
+
+The `searchParams` property is a <code>URLSearchParams</code> object representing the parsed <strong>search parameters</strong> of the URL.
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.searchParams // URLSearchParams { 'q' => 'a' }
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.searchParams // URLSearchParams {}
+```
+
+#### hash
+
+The `hash` property is a string representing the <strong>fragment identifier</strong> of the URL. When present, it is preceeded by a number sign (<code>#</code>).
+
+```js
+const uri = new URI('https://un:pw@localhost:8080/path/to/asset.jpg?q=a#content')
+
+uri.hash // "#content"
+```
+
+```js
+const uri = new URI('../to/asset.jpg')
+
+uri.hash // ""
+```
 
 
 
@@ -87,7 +248,7 @@ The `segments` property is an array of strings representing the <strong>path seg
 The `toString` method returns the whole URL as a string. It is a synonym for the `href` getter property.
 
 ```js
-new RelativeURL('../assets/kitten.jpg').toString() // "../assets/kitten.jpg"
+new URI('../assets/kitten.jpg').toString() // "../assets/kitten.jpg"
 ```
 
 #### toJSON
@@ -95,7 +256,7 @@ new RelativeURL('../assets/kitten.jpg').toString() // "../assets/kitten.jpg"
 The `toJSON` method returns the whole URL as a string. It is a synonym for the `href` getter property.
 
 ```js
-new RelativeURL('../assets/kitten.jpg').toJSON() // "../assets/kitten.jpg"
+new URI('../assets/kitten.jpg').toJSON() // "../assets/kitten.jpg"
 ```
 
 #### to
@@ -103,10 +264,32 @@ new RelativeURL('../assets/kitten.jpg').toJSON() // "../assets/kitten.jpg"
 The `to` method returns a new URL resolved by the current URL.
 
 ```js
-const kitten = new RelativeURL('../assets/kitten.jpg')
+const kitten = new URI('../assets/kitten.jpg')
 
 String(kitten.to('puppy.jpg')) // "../assets/puppy.jpg"
 ```
+
+
+
+## Static Methods
+
+#### from
+
+The static `from` method returns a new URI resolved by the current source.
+
+```js
+const kitten = new URI('../assets/kitten.jpg')
+
+String(kitten.to('puppy.jpg')) // "../assets/puppy.jpg"
+```
+
+---
+
+
+
+## Impact
+
+**URI** contributes approximately 42kB of JavaScript when unminified, or 14kB when minified, or 6kB when minified and compressed.
 
 ---
 

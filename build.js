@@ -2,7 +2,7 @@ import { rollup } from 'rollup'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { default as commonjs } from '@rollup/plugin-commonjs'
 import { default as typescript } from '@rollup/plugin-typescript'
-import { readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { readFile, rename, writeFile } from 'node:fs/promises'
 
 const plugins = [
 	nodeResolve({
@@ -32,7 +32,7 @@ async function build() {
 	const configs = [
 		{
 			inputOptions: {
-				input: 'src/RelativeURL.ts',
+				input: 'src/URI.ts',
 				plugins,
 				onwarn(warning, warn) {
 					if (warning.code !== 'UNRESOLVED_IMPORT') warn(warning)
@@ -57,10 +57,7 @@ async function build() {
 		await bundle.close()
 
 		// cleanup the bundle
-		await rename('RelativeURL.d.ts', 'mod.d.ts')
-		await rename('RelativeURL.d.ts.map', 'mod.d.ts.map')
-
-		await rm('mod.d.ts.map')
+		await rename('URI.d.ts', 'mod.d.ts')
 	}
 }
 

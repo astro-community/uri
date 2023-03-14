@@ -1,21 +1,21 @@
 import { assert, test } from './_setup.js'
-import { RelativeURL } from '../mod.js'
+import URI from '../mod.js'
 
 test(() => {
 	// ...
 
 	return [
 		{
-			name: 'RelativeURL Class',
+			name: 'URI Class',
 			test() {
-				assert.equal(typeof RelativeURL, 'function')
-				assert.equal(RelativeURL.prototype instanceof URL, true)
+				assert.equal(typeof URI, 'function')
+				assert.equal(URI.prototype instanceof URL, true)
 			},
 		},
 		{
 			name: 'Constructs a URL',
 			test() {
-				const url = new RelativeURL('../assets/kitten.jpg')
+				const url = new URI('../assets/kitten.jpg')
 	
 				assert.equal(url.href, '../assets/kitten.jpg')
 				assert.equal(url.toString(), '../assets/kitten.jpg')
@@ -26,7 +26,7 @@ test(() => {
 		{
 			name: 'Resolves a nested URL',
 			test() {
-				const rel = new RelativeURL('../assets/kitten.jpg')
+				const rel = new URI('../assets/kitten.jpg')
 				const url = new URL(rel, 'https://localhost/kittens/index.html')
 	
 				assert.equal(url.href, 'https://localhost/assets/kitten.jpg')
@@ -38,7 +38,7 @@ test(() => {
 		{
 			name: 'Fully supports URL with a relative URL',
 			test() {
-				const url = new RelativeURL('../assets/kitten.jpg')
+				const url = new URI('../assets/kitten.jpg')
 
 				assert.equal(url.hash, '')
 				assert.equal(url.host, '')
@@ -59,7 +59,7 @@ test(() => {
 		{
 			name: 'Fully supports URL with an absolute URL',
 			test() {
-				const url = new RelativeURL('https://un:pw@localhost:8080/path/to/assets/kitten.jpg?q=a#root')
+				const url = new URI('https://un:pw@localhost:8080/path/to/assets/kitten.jpg?q=a#root')
 
 				assert.equal(url.hash, '#root')
 				assert.equal(url.host, 'localhost:8080')
@@ -80,7 +80,7 @@ test(() => {
 		{
 			name: 'Supports methods',
 			test() {
-				const url = new RelativeURL('https://localhost/path/to/assets/kitten.jpg?q=a#root')
+				const url = new URI('https://localhost/path/to/assets/kitten.jpg?q=a#root')
 
 				assert.equal(url.toJSON(), 'https://localhost/path/to/assets/kitten.jpg?q=a#root')
 
@@ -89,7 +89,24 @@ test(() => {
 				assert.equal(url.to('puppy.jpg').toString(), 'https://localhost/path/to/assets/puppy.jpg')
 
 				assert.equal(
-					new RelativeURL('../assets/kitten.jpg?q=a#root').to('puppy.jpg').toString(),
+					new URI('../assets/kitten.jpg?q=a#root').to('puppy.jpg').toString(),
+					'../assets/puppy.jpg'
+				)
+			},
+		},
+		{
+			name: 'Supports URI.from()',
+			test() {
+				const url = URI.from('https://localhost/path/to/assets/kitten.jpg?q=a#root')
+
+				assert.equal(url.toJSON(), 'https://localhost/path/to/assets/kitten.jpg?q=a#root')
+
+				assert.equal(url.toString(), 'https://localhost/path/to/assets/kitten.jpg?q=a#root')
+
+				assert.equal(url.to('puppy.jpg').toString(), 'https://localhost/path/to/assets/puppy.jpg')
+
+				assert.equal(
+					URI.from('../assets/kitten.jpg?q=a#root', 'puppy.jpg').toString(),
 					'../assets/puppy.jpg'
 				)
 			},
